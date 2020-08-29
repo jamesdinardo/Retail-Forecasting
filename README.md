@@ -1,2 +1,31 @@
 # Retail-Forecasting
-This project uses historical sales data for 45 retail stores and predicts the department-wide sales of each store for the following year.
+This project uses historical sales data for 45 retail stores and predicts the department-wide sales of each store for the following year. The data comes from [Kaggle](https://www.kaggle.com/manjeetsingh/retaildataset) and contains information about the store type, store size, temperature, price of fuel, store department, consumer price index each week, whether a holiday occurred that week, and the sales that week.
+
+## Table of Contents
+
+1. Project Outline
+
+2. Overview of the data
+
+3. Exploratory Data Analysis
+
+4. Modeling
+
+a. Nearest Neighbors
+
+b. Naive Bayes
+
+c. Logistic Regression
+
+d. Support Vector Machines
+
+e. Decision Tree Classifiers
+
+f. Random Forests
+
+g. Gradient Boosted Trees
+
+5. Conclusion
+
+## 1. Project Outline
+
