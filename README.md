@@ -3,7 +3,7 @@ This project uses historical sales data for 45 retail stores and predicts the de
 
 ## Table of Contents
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Project Outline
+1. Project Outline
 
 2. Overview of the data
 
