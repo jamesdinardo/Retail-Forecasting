@@ -3,7 +3,7 @@ This project uses historical sales data for 45 retail stores and predicts the de
 
 ## Table of Contents
 
-1. Project Outline
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Project Outline
 
 2. Overview of the data
 
@@ -11,19 +11,19 @@ This project uses historical sales data for 45 retail stores and predicts the de
 
 4. Modeling
 
-a. Nearest Neighbors
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a. Nearest Neighbors
 
-b. Naive Bayes
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b. Naive Bayes
 
-c. Logistic Regression
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c. Logistic Regression
 
-d. Support Vector Machines
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d. Support Vector Machines
 
-e. Decision Tree Classifiers
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e. Decision Tree Classifiers
 
-f. Random Forests
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; f. Random Forests
 
-g. Gradient Boosted Trees
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g. Gradient Boosted Trees
 
 5. Conclusion
 
