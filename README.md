@@ -32,3 +32,37 @@ One of the key challenges for retail companies is to predict how well a store or
 The code is written using Python inside of Jupyter notebooks. There are 7 notebooks in total: one for data exploration, and one for each of the 7 models that will be trained, tested, and evaluated. The notebooks can be downloaded should one wish to experiment on their own with the data. Moreover, I have created an easy to use eapplication, written in Flask, where the user can enter a particular store and get predictions for that store for the following year. 
 
 ## 2. Overview of the Data
+
+The data is contained in three csv files: stores, sales, and features. After merging this data,
+we are left with one dataframe with 421570 rows and 16 columns. Each row represents a week of sales
+for a particular store and department. Each column is a variables that describes some aspect
+of the sales. Our task is to use the first 15 variables (called "features") to predict the 
+variable "Weekly_Sales" (called the "target"). A description of each variable is as follows:
+
+Store - The store number, ranging from 1 to 45
+
+Date - The week for which sales were calculcated
+
+Temperature - Average temperature (Farenheit) in the region in which the store is located
+
+Fuel_Price - Cost of fuel (dollars per gallon) in the region in which the store is located
+
+MarkDown1-5 - Promotional markdowns (discounts) that are only tracked from Nov. 2011 onward
+
+CPI - Consumer Price Index, which measures the overall costs of goods and services bought by
+a typical customer. As CPI rises, the the average customer has to spend more to maintain the same
+standard of living. It is calculated as follows:
+
+(price of a basket of goods in current year / price of the basket in the base year) x 100
+
+Unemployment - Unemployment Rate
+
+IsHoliday - True if the week contains a holiday
+
+Dept - The department number
+
+Type - The type of store
+
+Size - The size of the store
+
+Weekly_Sales - The total sales for that week. This is the target variable that we are trying to predict.
