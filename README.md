@@ -66,3 +66,10 @@ Type - The type of store
 Size - The size of the store
 
 Weekly_Sales - The total sales for that week. This is the target variable that we are trying to predict.
+
+## 3. Exploratory Data Analysis
+
+To begin, we can examine some general summary statistics for each variable:
+
+![Describe](blob/master/img/describe.png?raw=True)
+
