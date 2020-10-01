@@ -71,5 +71,9 @@ Weekly_Sales - The total sales for that week. This is the target variable that w
 
 To begin, we can examine some general summary statistics for each variable:
 
-![Describe](blob/master/img/describe.png?raw=True)
+![Plot1](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/describe.png)
+
+
+
+
 
