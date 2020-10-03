@@ -122,16 +122,25 @@ _ = plt.xticks(rotation='90')
 _ = plt.legend(['Minimum: Store 5', 'Maximum: Store 20', 'Median: Store 45'])
 ~~~
 
-![Plot4](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/)
+![Plot4](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/min_median_max_stores.png)
 
 The trends observed earlier appear to be consistent among stores with different sales volumes, as each line follows the same general pattern.
 
-For departments, there is also a disparity between sales volume:
+There is also a disparity between sales volume for different departments:
 
 ~~~
 df.groupby('Dept').agg({'Weekly_Sales':'mean'}).sort_values(by='Weekly_Sales', ascending=False)
 ~~~
 
-~[Plot5](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/)
+![Plot5](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/average_weekly_sales_by_dept.png)
 
+In addition, some of the departments only appear for a few weeks, suggesting that those departments might have been phased out or merged with other departments. Since we are predicting store department sales, each of these variables are likely to be important when building models. Let's look at the linear correleation between each of the continuous variables in the dataset. An easy way to view linear correlation is to construct a heatmap:
 
+~~~
+fix, ax = plt.subplots(figsize=(7, 5))
+_ = sns.heatmap(df.corr(), square=True, cmap='coolwarm', ax=ax)
+~~~
+
+![Plot6](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/heatmap.png)
+
+Values closer to 0 indicate weak or no correlation, positive values indicate positive correlation, and negative values indicate negative correlation. The only variable with much correlation to the target (weekly sales) is Size, which make sense since larger stores tend to sell more. But it is improtant to note that the heatmap only shows linear one-to-one correlation, so it is possible that variables are correlated to the target in tandem with eachother or in non-linear ways.
