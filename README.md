@@ -1,5 +1,5 @@
 # Retail-Forecasting
-This project uses historical sales data for 45 retail stores and predicts the department-wide sales of each store for the following year. The data comes from [Kaggle](https://www.kaggle.com/manjeetsingh/retaildataset) and contains information about the store type, store size, temperature, price of fuel, store department, consumer price index each week, whether a holiday occurred that week, and the sales that week.
+This project uses historical sales data for 45 retail stores and predicts the department-wide weekly sales of each store for the following year. The data comes from [Kaggle](https://www.kaggle.com/manjeetsingh/retaildataset) and contains information about the store type, store size, temperature, price of fuel, store department, consumer price index each week, whether a holiday occurred that week, and the sales that week.
 
 ## Table of Contents
 
@@ -13,9 +13,7 @@ This project uses historical sales data for 45 retail stores and predicts the de
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a. Nearest Neighbors
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b. Linear Regression and Regularized Regression
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c. Support Vector Machines
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b. Linear Models
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d. Decision Tree Regressor
 
@@ -27,16 +25,16 @@ This project uses historical sales data for 45 retail stores and predicts the de
 
 ## 1. Introduction
 
-One of the key challenges for retail companies is to predict how well a store or item will perform in the future based on past performance. Given five years of information about a particular store--it's geographical location, weather, weekly consumer price index, weekly sales--can we predict what it's sales are likely to be next year? This project attempts to predict the following year's sales for 45 retail stores based on these and other variables (see section 2 for the full list). It makes use of several data-science libraies in Python--Pandas for data cleaning and analysis, Matplotlib for data visualization, and scikit-learn for machine learning. We will be concerned not only with coming up with the best possible model, but also comparing and contrasting the performance of different algorithms. 
+One of the key challenges for retail companies is to predict how well a store or department will perform in the future based on past performance. Given past information about a particular store department--its geographical location, weather, weekly consumer price index, previous sales etc--can we predict what its sales will be for a given week next year? This project attempts to predict the 2012 weekly sales for each department of a set of 45 retail stores, based on data from 2011-2011 (see section 2 for the full list of variables). It makes use of several data-science libraries in Python--Pandas for data cleaning and analysis, Matplotlib for data visualization, and scikit-learn for machine learning. We will be concerned not only with coming up with the best possible model, but also comparing and contrasting the performance of different algorithms. 
 
-The code is written using Python inside of Jupyter notebooks. There are 7 notebooks in total: one for data exploration, and one for each of the 7 models that will be trained, tested, and evaluated. The notebooks can be downloaded should one wish to experiment on their own with the data. Moreover, I have created an easy to use eapplication, written in Flask, where the user can enter a particular store and get predictions for that store for the following year. 
+The code is written using Python inside of Jupyter notebooks (ipynb files). There are 7 notebooks in total: one for data preparation, one for data exploration, and one for each of the 5 types of models that will be trained, tested, and evaluated. This readme contains only minimal code and visualizations needed to express the main insights: the full code can be found in the notebooks, which can be downloaded should one wish to experiment on their own with the data. Additionally, I have created an easy to use application, written in Flask, where the user can input information, such as the store, department, and week, and immediately receive a prediction for weekly sales. 
 
 ## 2. Overview of the Data
 
-The data is contained in three csv files: stores, sales, and features. After merging this data,
-we are left with one dataframe with 421570 rows and 16 columns. Each row represents a week of sales
-for a particular store and department. Each column is a variables that describes some aspect
-of the sales. Our task is to use the first 15 variables (called "features") to predict the 
+The data is contained in three csv files: stores, sales, and features. After merging this data and eliminating rows with negative values
+we are left with a single dataframe containing 418660 rows and 16 columns. Each row represents a week of sales
+for a particular store department. Each column is a variable that pertains to some aspect
+of that week of sales. Our task is to use the first 15 variables (called "features") to predict the 
 variable "Weekly_Sales" (called the "target"). A description of each variable is as follows:
 
 Store - The store number, ranging from 1 to 45
@@ -61,8 +59,52 @@ IsHoliday - True if the week contains a holiday
 
 Dept - The department number
 
-Type - The type of store
+Type - The type of store (A, B, or C). No further information on type is provided, but it appears to be correlated to the size of the store (see section 3).
 
 Size - The size of the store
 
-Weekly_Sales - The total sales for that week. This is the target variable that we are trying to predict.
+Weekly_Sales - The sales for a given department within a given store that week. This is the target variable that we are trying to predict.
+
+## 3. Exploratory Data Analysis
+
+To begin, we can examine some general summary statistics for each variable:
+
+~~~
+df.describe().T
+~~~
+
+![Plot1](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/describe.png)
+
+We see that the average store deparment does $16027.10 in sales per week, with a standard deviation of $22726.51. We can plot the average weekly sales as a function of date, using a line plot:
+
+~~~
+average_sales_per_week_per_department = df.groupby('Date')['Weekly_Sales'].mean()
+
+fig, ax = plt.subplots(figsize=(15, 5))
+_ = ax.set_ylabel('Weekly Sales')
+_ = ax.set_title('Average Weekly Sales Per Store Department')
+_ = average_sales_per_week_per_department.plot()
+~~~
+
+![Plot2](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/
+
+Sales appear steady for most of the year up until the holidays, where there is a noticable increase in sales for both 2010 and 2011. The following plot shows the same data, only with each year separated vertically. Note that the final year of data, 2012, only has sales data up until 2012-12-10, which is why the line is flat for most of December 2012:
+
+~~~
+fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(15, 8))
+_ = ax[0].plot(df_indexed['2010'].groupby('Date')['Weekly_Sales'].mean())
+_ = ax[1].plot(df_indexed['2011'].groupby('Date')['Weekly_Sales'].mean())
+_ = ax[2].plot(df_indexed['2012'].groupby('Date')['Weekly_Sales'].mean())
+
+_ = ax[0].set_yticks([10000, 15000, 20000, 25000])
+_ = ax[1].set_yticks([10000, 15000, 20000, 25000])
+_ = ax[2].set_yticks([10000, 15000, 20000, 25000])
+
+_ = ax[0].set_title("Average Weekly Sales Per Store Department, Per Year")
+_ = ax[1].set_ylabel("Sales")
+_ = ax[2].set_xlabel("Date")
+~~~
+
+![Plot3](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/subplots_per_year.png)
+
+
