@@ -67,7 +67,7 @@ Weekly_Sales - The sales for a given department within a given store that week. 
 
 ## 3. Exploratory Data Analysis
 
-To begin, we can examine some general summary statistics for each variable:
+Our dataset has 45 unique stores, 81 unique departments, 3 unique types, and 3323 unique store department combinations. The following table displays general summary statistics for the continuous variables:
 
 ~~~
 df.describe().T
@@ -86,11 +86,13 @@ _ = ax.set_title('Average Weekly Sales Per Store Department')
 _ = average_sales_per_week_per_department.plot()
 ~~~
 
-![Plot2](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/
+![Plot2](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/sales_per_week.png)
 
-Sales appear steady for most of the year up until the holidays, where there is a noticable increase in sales for both 2010 and 2011. The following plot shows the same data, only with each year separated vertically. Note that the final year of data, 2012, only has sales data up until 2012-12-10, which is why the line is flat for most of December 2012:
+Sales appear steady for most of the year up until the holidays, where there is a noticable increase in sales for both 2010 and 2011. The following plot shows the same data, only with each year separated vertically. Note that the final year of data, 2012, only has sales data up until 2012-12-10, which is why the line flattens out toward the end of the year:
 
 ~~~
+df_indexed = df.set_index('Date')
+
 fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(15, 8))
 _ = ax[0].plot(df_indexed['2010'].groupby('Date')['Weekly_Sales'].mean())
 _ = ax[1].plot(df_indexed['2011'].groupby('Date')['Weekly_Sales'].mean())
@@ -106,5 +108,30 @@ _ = ax[2].set_xlabel("Date")
 ~~~
 
 ![Plot3](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/subplots_per_year.png)
+
+Stores and departments vary considerably. Moreover, they are not equally represented in the dataset.
+
+The average store does $1046624.03 in sales per week, but there is a large difference between the store with the highest, lowest, and median sales:
+
+~~~
+min_max_median_store = df[df['Store'].isin([5, 20, 45])].groupby(['Date', 'Store'])['Weekly_Sales'].sum().dropna().reset_index()
+
+fig, ax = plt.subplots(figsize=(15, 5))
+_ = sns.lineplot(x='Date', y='Weekly_Sales', hue='Store', data=min_max_median_store)
+_ = plt.xticks(rotation='90')
+_ = plt.legend(['Minimum: Store 5', 'Maximum: Store 20', 'Median: Store 45'])
+~~~
+
+![Plot4](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/)
+
+The trends observed earlier appear to be consistent among stores with different sales volumes, as each line follows the same general pattern.
+
+For departments, there is also a disparity between sales volume:
+
+~~~
+df.groupby('Dept').agg({'Weekly_Sales':'mean'}).sort_values(by='Weekly_Sales', ascending=False)
+~~~
+
+~[Plot5](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/)
 
 
