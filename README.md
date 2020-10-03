@@ -75,7 +75,36 @@ df.describe().T
 
 ![Plot1](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/describe.png)
 
+We see that the average store deparment does $16027.10 in sales per week, with a standard deviation of $22726.51. We can plot the average weekly sales as a function of date, using a line plot:
 
+~~~
+average_sales_per_week_per_department = df.groupby('Date')['Weekly_Sales'].mean()
 
+fig, ax = plt.subplots(figsize=(15, 5))
+_ = ax.set_ylabel('Weekly Sales')
+_ = ax.set_title('Average Weekly Sales Per Store Department')
+_ = average_sales_per_week_per_department.plot()
+~~~
+
+![Plot2](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/
+
+Sales appear steady for most of the year up until the holidays, where there is a noticable increase in sales for both 2010 and 2011. The following plot shows the same data, only with each year separated vertically. Note that the final year of data, 2012, only has sales data up until 2012-12-10, which is why the line is flat for most of December 2012:
+
+~~~
+fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(15, 8))
+_ = ax[0].plot(df_indexed['2010'].groupby('Date')['Weekly_Sales'].mean())
+_ = ax[1].plot(df_indexed['2011'].groupby('Date')['Weekly_Sales'].mean())
+_ = ax[2].plot(df_indexed['2012'].groupby('Date')['Weekly_Sales'].mean())
+
+_ = ax[0].set_yticks([10000, 15000, 20000, 25000])
+_ = ax[1].set_yticks([10000, 15000, 20000, 25000])
+_ = ax[2].set_yticks([10000, 15000, 20000, 25000])
+
+_ = ax[0].set_title("Average Weekly Sales Per Store Department, Per Year")
+_ = ax[1].set_ylabel("Sales")
+_ = ax[2].set_xlabel("Date")
+~~~
+
+![Plot3](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/subplots_per_year.png)
 
 
