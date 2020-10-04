@@ -11,7 +11,7 @@ This project uses historical sales data for 45 retail stores and predicts the de
 
 4. Modeling
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a. Nearest Neighbors
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a. K-Nearest Neighbors
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b. Linear Models
 
@@ -144,3 +144,70 @@ _ = sns.heatmap(df.corr(), square=True, cmap='coolwarm', ax=ax)
 ![Plot6](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/heatmap.png)
 
 Values closer to 0 indicate weak or no correlation, positive values indicate positive correlation, and negative values indicate negative correlation. The only variable with much correlation to the target (weekly sales) is Size, which make sense since larger stores tend to sell more. But it is improtant to note that the heatmap only shows linear one-to-one correlation, so it is possible that variables are correlated to the target in tandem with eachother or in non-linear ways.
+
+Another useful type of plot is the countplot, which counts the number of instances of each unique categorical variable. The following code creates three categorical variables by binning the continuous variable, Size, into three categories: small, medium, and large. Then it maps the Type variable to color and counts how many instances there are for each:
+
+~~~
+df['Size_Category'] = pd.cut(df['Size'], bins=[0, 100000, 200000, np.inf], labels=['Small', 'Medium', 'Large'])
+
+_ = sns.countplot(x='Size_Category', hue='Type', data=df)
+_ = plt.xlabel("Size Category")
+_ = plt.ylabel("Count")
+~~~
+
+![Plot7](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/size_category_count.png)
+
+What this plot shows is that Size and Type are correlated. All large stores (>200000) are of Type A, and all stores of Type C are small (<100000). 
+
+## 4. Modeling
+
+Before training any machine learning models, we have to "preprocess" our data, which means getting it into a format that the models can understand and perform well on. The scikit-learn API cannot directly work with columns of type "object." So we create dummy variables in Pandas, using the following code:
+
+~~~
+df_dummies = pd.get_dummies(df_
+~~~
+
+### a. K-Nearest Neighbors
+
+The K-Nearest Neighbors or KNN algorithm works by mapping out the feature values for the training data, and then comparing each new data point that we want to predict to those values. Imagine that are dataset had only 1 feature, Size, and 1 target, Weekly Sales. The sizes for all training datapoints are stored, and we compare the size of a new datapoint to predict. The algorithm finds the K-Nearest Neighbors--that is, the K datapoints that have the most similar size to the new datapoint--takes the mean target value of those datapoints, and uses that value for the prediction. K is a hyperparamter that we set manually, so if we set K=5, the algorithm will find the closest 5 datapoints based on store size, and predict that our new datapoint's target value (weekly sales) is that of the mean of those 5 points.
+
+
+
+### b. Linear Models
+
+Linear models attempt to fit a straight line through the datapoints, and use this line to make predictions on new datapoints. 
+
+
+### c. Decision Tree Regressor
+
+A decision tree asks a series of true or false questions about the data in order to sort them into nodes. For example, we might first ask "Is the deptartment 92?" and move data into the left hand node if not, and right hand node if yes. This is, in fact, the first question (root node) asked by the algorithm of our dataset:
+
+![Plot9](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/tree.png)
+
+
+
+### d. Random Forest Regressor
+
+The last two classes of algorithms we will try are called "ensemble methods," since they combine several machien learning models into a meta-model. Random Forests work by creating multiple decision trees and then averaging out their predictions.
+
+### e. Gradient Boosted Trees
+
+Boosting is the process by which we build models sequentially, with each model making adjustments to improve the results of previous models. In our case, we build decision trees one at a time, with each tree (called a base learner) learning from the mistakes of the previous tree.
+
+## 5. Conclusion
+
+~~~
+from pandas.plotting import autocorrelation_plot
+
+time_series = df_indexed.groupby(df_indexed.index)['Weekly_Sales'].mean()
+
+fig, ax = plt.subplots(figsize=(15, 5))
+autocorrelation_plot(time_series, ax=ax)
+_ = plt.xlim(0, 60)
+_ = plt.ylim(-.4, .4)
+_ = plt.xticks(range(0, 60, 1))
+_ = plt.title('Autocorrelation for Various Lag Values of Weekly Sales')
+_ = plt.annotate('Lag = 1 year', xy=(52, .35))
+~~~
+
+![Plot10](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/autocorrelation.png)
