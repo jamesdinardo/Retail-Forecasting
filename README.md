@@ -220,14 +220,72 @@ KNN does a decent job but is especially slow to train. Next we will consider var
 
 ### b. Linear Models
 
-Linear models attempt to fit a straight line through the datapoints, and use this line to make predictions on new datapoints. 
+Linear models attempt to fit a straight line through the datapoints, and use this line to make predictions on new datapoints. We will try three linear models: Linear Regression, Lasso, and Ridge. 
 
+Linear Regression models create a best fit line by finding the line that minimizes a cost function. Specifically, the best fit line is the one that minimizes the squared difference (residuals) between each datapoint and the line. Linear Regression is also known as Ordinary Least Squares (OLS), since it tries to minimize the sum of the squared residuals. Whichever line does this the best is used as a model for predicting new datapoints. Again, imagine that we had only a single feature, Size, and wanted to predict Weekly Sales. In this case, the prediction (y) would be the function of the input w * x + b, where w is the coefficient and b is the y-intercept, both of which are learned in training the model.
+
+Lasso and Ridge are examples of "regularization," which means penalizing models that have very large coefficients to keep them from overfitting. Lasso (L1 regularization) adds a penalty to the cost function equal to the sum of the absolute value of the coefficients, while Ridge (L2 regularizaiton) adds a penalty to the cost function equal to the sum of squares of the coefficients. Both have the effect of reducing the coefficients that appear in the final equation for the model. 
+
+Ridge Regression and Linear Regression perform equally well, whereas Lasso (because it reduces most coefficients to 0) performs poorly. Here, we first put our data on a logarithmic scale before training the model.
+
+~~~
+from sklearn.preprocessing import FunctionTransformer
+
+transformer = FunctionTransformer(np.log1p)
+transformer.fit(X)
+X_log = transformer.fit_transform(X)
+
+X_train_log, X_test_log, y_train, y_test = train_test_split(X_log, y, test_size=0.25, random_state=0)
+
+ridge = Ridge(alpha=0.1)
+ridge.fit(X_train, y_train)
+
+y_pred = reg.predict(X_test_log)
+
+print('R2 with log scaled data: {}'.format(metrics.r2_score(y_test, y_pred)))
+print('RMSE with log scaled data: {}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
+~~~
+
+R2 with log scaled data: 0.6710499077295844
+RMSE with log scaled data: 12946.116917472
+
+The results are an improvement from KNN.
 
 ### c. Decision Tree Regressor
 
 A decision tree asks a series of true or false questions about the data in order to sort them into nodes. For example, we might first ask "Is the deptartment 92?" and move data into the left hand node if not, and right hand node if yes. This is, in fact, the first question (root node) asked by the algorithm of our dataset:
 
+~~~
+dt_pruned = DecisionTreeRegressor(random_state=0, max_depth=4)
+dt_pruned.fit(X_train, y_train)
+
+features = list(df_dummies.drop('Weekly_Sales', axis=1).columns)
+
+fig, ax = plt.subplots(figsize=(16,10))
+tree.plot_tree(dt_pruned, feature_names=features, fontsize=8, filled=True)
+plt.show()
+~~~
+
 ![Plot9](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/tree.png)
+
+The first thing our model does is separate datapoints based on whether or not they are from department 92. Then it asks a number of questions relating to store type, size, and other department information. The plotted tree was limited to a max depth of 4, which means that only 4 splits happen for any datapoint as it makes its way down the tree. We can inspect the results of different values for max depth, keeping in mind that asking too many questions (too large a depth) will result in overfitting the model:
+
+~~~
+md_values = np.array([4, 10, 15, 20, 30, 40, None])
+
+for i in md_values:
+    dt = DecisionTreeRegressor(random_state=0, max_depth=i)
+    dt.fit(X_train, y_train)
+    print('Max Depth of {}: {}'.format(i, dt.score(X_test, y_test)))
+~~~
+
+Max Depth of 4: 0.39176342471638936
+Max Depth of 10: 0.6906867054599464
+Max Depth of 15: 0.7952619820850957
+Max Depth of 20: 0.8513349930179878
+Max Depth of 30: 0.9080193432865895
+Max Depth of 40: 0.937263634973241
+Max Depth of None: 0.9505648969358046
 
 
 
