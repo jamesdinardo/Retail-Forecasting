@@ -1,5 +1,5 @@
 # Retail-Forecasting
-This project uses historical sales data for 45 retail stores and predicts the department-wide weekly sales of each store for the following year. The data comes from [Kaggle](https://www.kaggle.com/manjeetsingh/retaildataset) and contains information about the store type, store size, temperature, price of fuel, store department, consumer price index each week, whether a holiday occurred that week, and the sales that week.
+This project uses historical sales data for 45 retail stores and predicts the weekly sales for each store department for the following year. The data comes from [Kaggle](https://www.kaggle.com/manjeetsingh/retaildataset) and contains information about the store type, store size, temperature, price of fuel, store department, consumer price index each week, whether a holiday occurred that week, and the sales that week.
 
 ## Table of Contents
 
@@ -19,15 +19,15 @@ This project uses historical sales data for 45 retail stores and predicts the de
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e. Random Forest Regressor
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; f. Gradient Boosted Trees
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; f. Boosted Trees
 
 5. Conclusion
 
 ## 1. Introduction
 
-One of the key challenges for retail companies is to predict how well a store or department will perform in the future based on past performance. Given past information about a particular store department--its geographical location, weather, weekly consumer price index, previous sales etc--can we predict what its sales will be for a given week next year? This project attempts to predict the 2012 weekly sales for each department of a set of 45 retail stores, based on data from 2011-2011 (see section 2 for the full list of variables). It makes use of several data-science libraries in Python--Pandas for data cleaning and analysis, Matplotlib for data visualization, and scikit-learn for machine learning. We will be concerned not only with coming up with the best possible model, but also comparing and contrasting the performance of different algorithms. 
+One of the key challenges for retail companies is to predict how well a store or department will perform in the future based on past performance. Given past information about a particular store department--its size, previous sales, the temperature and unemployment rate that week etc--can we predict what its sales will be for a given week next year? This project attempts to predict the 2012 weekly sales for each department of a set of 45 retail stores, based on data from 2010-2011 (see section 2 for the full list of variables). It makes use of several data-science libraries in Python--pandas for data cleaning and analysis, matplotlib for data visualization, and scikit-learn for machine learning. The goal us to implement several different models (including linear, tree-based, and ensemble methods) to come up with a best model that can predict sales within one standard deviation of the mean.
 
-The code is written using Python inside of Jupyter notebooks (ipynb files). There are 7 notebooks in total: one for data preparation, one for data exploration, and one for each of the 5 types of models that will be trained, tested, and evaluated. This readme contains only minimal code and visualizations needed to express the main insights: the full code can be found in the notebooks, which can be downloaded should one wish to experiment on their own with the data. Additionally, I have created an easy to use application, written in Flask, where the user can input information, such as the store, department, and week, and immediately receive a prediction for weekly sales. 
+The code is written in Python inside of Jupyter notebooks (ipynb files). There are 7 notebooks in total: one for data preparation, one for data exploration, and one for each of the 5 types of models that will be trained, tested, and evaluated. This readme contains only minimal code and visualizations needed to express the main insights: the full code can be found in the notebooks, which can be downloaded should one wish to experiment on their own with the data. Additionally, I have created an easy to use application, written in Flask, where the user can input information, such as the store, department, and week, and immediately receive a prediction for weekly sales. 
 
 ## 2. Overview of the Data
 
@@ -111,7 +111,7 @@ _ = ax[2].set_xlabel("Date")
 
 Stores and departments vary considerably. Moreover, they are not equally represented in the dataset.
 
-The average store does $1046624.03 in sales per week, but there is a large difference between the store with the highest, lowest, and median sales:
+The average store does $1046624.03 in sales per week, but there is a large difference between the stores with the highest, lowest, and median sales:
 
 ~~~
 min_max_median_store = df[df['Store'].isin([5, 20, 45])].groupby(['Date', 'Store'])['Weekly_Sales'].sum().dropna().reset_index()
@@ -143,7 +143,7 @@ _ = sns.heatmap(df.corr(), square=True, cmap='coolwarm', ax=ax)
 
 ![Plot6](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/heatmap.png)
 
-Values closer to 0 indicate weak or no correlation, positive values indicate positive correlation, and negative values indicate negative correlation. The only variable with much correlation to the target (weekly sales) is Size, which make sense since larger stores tend to sell more. But it is improtant to note that the heatmap only shows linear one-to-one correlation, so it is possible that variables are correlated to the target in tandem with eachother or in non-linear ways.
+Values closer to 0 indicate weak or no correlation, positive values indicate positive correlation, and negative values indicate negative correlation. The only variable with much correlation to the target (weekly sales) is Size, which make sense since larger stores tend to sell more. But it is improtant to note that heatmaps only show linear one-to-one correlation, so it is possible that variables are correlated to the target in tandem with eachother or in non-linear ways.
 
 Another useful type of plot is the countplot, which counts the number of instances of each unique categorical variable. The following code creates three categorical variables by binning the continuous variable, Size, into three categories: small, medium, and large. Then it maps the Type variable to color and counts how many instances there are for each:
 
@@ -161,17 +161,62 @@ What this plot shows is that Size and Type are correlated. All large stores (>20
 
 ## 4. Modeling
 
-Before training any machine learning models, we have to "preprocess" our data, which means getting it into a format that the models can understand and perform well on. The scikit-learn API cannot directly work with columns of type "object." So we create dummy variables in Pandas, using the following code:
+Before training any machine learning models, we have to "preprocess" our data, which means getting it into a format that the models can understand and perform well on. Each of the models notebooks begins with the following preprocessing steps:
+
+- Create three categorical features from 'Date'--Week, Month, and Year--and then drop 'Date'
+
+- The scikit-learn API cannot directly work with columns of type "object." So we create dummy variables in Pandas, using the following code:
 
 ~~~
-df_dummies = pd.get_dummies(df_
+df_dummies = pd.get_dummies(df, drop_first=True)
 ~~~
+
+- split the data into X (features) and y (target) and then split each into train and test groups:
+
+~~~
+X = df_dummies.drop('Weekly_Sales', axis=1).values
+y = df_dummies['Weekly_Sales'].values.reshape(-1, 1)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+print(f'Shape of X_train: {X_train.shape}')
+print(f'Shape of X_test: {X_test.shape}')
+~~~
+
+Shape of X_train: (313995, 201)
+Shape of X_test: (104665, 201)
+
+Now, 75% of the data is used to train the model, and 25% will be used to test (evaluate) the model. Note that creating dummy variables greatly increases the number of features to 201. We can use feature selection techniques to reduce this number, or keep it as is depending on how the model is performing.
+
+The goal is to optimize the performance of each model, and then select the model with the best performance. We will use to metrics from the scikit-learn library to measure performance. R2 (pronounced "R squared") evaluates the fit of the model, with 1.0 being a perfect fit. The Root Mean Squared Error (RMSE) squares the difference between each prediction and the real value, sums them all up, and then takes the square root. Since the standard deviation of weekly sales is around $22,000, a good model should be well below that.
 
 ### a. K-Nearest Neighbors
 
-The K-Nearest Neighbors or KNN algorithm works by mapping out the feature values for the training data, and then comparing each new data point that we want to predict to those values. Imagine that are dataset had only 1 feature, Size, and 1 target, Weekly Sales. The sizes for all training datapoints are stored, and we compare the size of a new datapoint to predict. The algorithm finds the K-Nearest Neighbors--that is, the K datapoints that have the most similar size to the new datapoint--takes the mean target value of those datapoints, and uses that value for the prediction. K is a hyperparamter that we set manually, so if we set K=5, the algorithm will find the closest 5 datapoints based on store size, and predict that our new datapoint's target value (weekly sales) is that of the mean of those 5 points.
+The K-Nearest Neighbors or KNN algorithm works by mapping out the feature values for the training data, and then comparing each new datapoint that we want to predict to those values. Imagine that our dataset had only 1 feature, Size, and we wanted to predict the Weekly Sales. The sizes for all training datapoints are stored, and we compare the size of a new datapoint for which we want to predict sales. The algorithm finds the K-Nearest Neighbors--that is, the K datapoints that have the most similar size to the new datapoint--takes the mean target value of those datapoints, and uses that value for the prediction. K is a hyperparamter that we set manually, so if we set K=5, the algorithm will find the closest 5 datapoints based on store size, and predict that our new datapoint's target value (weekly sales) is that of the mean of those 5 points.
 
+The best KNN model is one where we use feature selection to retain only the top 50 features, which improves performance and speed.
 
+~~~
+from sklearn.feature_selection import SelectPercentile
+
+selection = SelectPercentile(percentile=25)
+selection.fit(X_train, y_train)
+X_train_selected = selection.transform(X_train)
+
+knn = KNeighborsRegressor(n_jobs=-1)
+knn.fit(X_train_selected, y_train)
+
+X_test_selected = selection.transform(X_test)
+
+y_pred = knn.predict(X_test_selected)
+
+print('R2: {}'.format(metrics.r2_score(y_test, y_pred)))
+print('RMSE: {}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
+~~~
+
+R2: 0.5574550714522967
+RMSE: 15015.96345584068
+
+KNN does a decent job but is especially slow to train. Next we will consider various linear models.
 
 ### b. Linear Models
 
