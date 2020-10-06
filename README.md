@@ -226,34 +226,25 @@ Linear Regression models create a best fit line by finding the line that minimiz
 
 Lasso and Ridge are examples of "regularization," which means penalizing models that have very large coefficients to keep them from overfitting. Lasso (L1 regularization) adds a penalty to the cost function equal to the sum of the absolute value of the coefficients, while Ridge (L2 regularizaiton) adds a penalty to the cost function equal to the sum of squares of the coefficients. Both have the effect of reducing the coefficients that appear in the final equation for the model. 
 
-Ridge Regression and Linear Regression perform equally well, whereas Lasso (because it reduces most coefficients to 0) performs poorly. Here, we first put our data on a logarithmic scale before training the model.
+The best performing linear model is a Ridge regression that reduces the dataset to only 124 features.
 
 ~~~
-from sklearn.preprocessing import FunctionTransformer
-
-transformer = FunctionTransformer(np.log1p)
-transformer.fit(X)
-X_log = transformer.fit_transform(X)
-
-X_train_log, X_test_log, y_train, y_test = train_test_split(X_log, y, test_size=0.25, random_state=0)
-
 ridge = Ridge(alpha=0.1)
 ridge.fit(X_train, y_train)
+y_pred = ridge.predict(X_test)
 
-y_pred = reg.predict(X_test_log)
-
-print('R2 with log scaled data: {}'.format(metrics.r2_score(y_test, y_pred)))
-print('RMSE with log scaled data: {}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
+print('R2 using L2 regularization, week of the month, best dept: {:.2f}'.format(metrics.r2_score(y_test, y_pred)))
+print('RMSE using L2 regularization, week of the month, best dept: {:.2f}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
 ~~~
 
-R2 with log scaled data: 0.6710499077295844
-RMSE with log scaled data: 12946.116917472
+R2 using L2 regularization, week of the month, best dept: 0.63
+RMSE using L2 regularization, week of the month, best dept: 13447.08
 
 The results are an improvement from KNN.
 
 ### c. Decision Tree Regressor
 
-A decision tree asks a series of true or false questions about the data in order to sort them into nodes. For example, we might first ask "Is the deptartment 92?" and move data into the left hand node if not, and right hand node if yes. This is, in fact, the first question (root node) asked by the algorithm of our dataset:
+A decision tree asks a series of true or false questions about the data in order to sort them into nodes. For example, we might first ask "Is the department 92?" and move data into the left hand node if not, and right hand node if yes. This is, in fact, the first question (root node) asked by the algorithm of our dataset:
 
 ~~~
 dt_pruned = DecisionTreeRegressor(random_state=0, max_depth=4)
@@ -266,9 +257,9 @@ tree.plot_tree(dt_pruned, feature_names=features, fontsize=8, filled=True)
 plt.show()
 ~~~
 
-![Plot9](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/tree.png)
+![Plot8](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/tree.png)
 
-The first thing our model does is separate datapoints based on whether or not they are from department 92. Then it asks a number of questions relating to store type, size, and other department information. The plotted tree was limited to a max depth of 4, which means that only 4 splits happen for any datapoint as it makes its way down the tree. We can inspect the results of different values for max depth, keeping in mind that asking too many questions (too large a depth) will result in overfitting the model:
+The first thing our model does is separate datapoints based on whether or not they are from department 92. Then it asks a number of questions relating to store type, size, and other department information. The plotted tree was limited to a max depth of 4, which means that only 4 splits happen for any datapoint as it makes its way down the tree. We can inspect the R2 results of different values for max depth, keeping in mind that asking too many questions (too large a depth) will result in overfitting the model:
 
 ~~~
 md_values = np.array([4, 10, 15, 20, 30, 40, None])
@@ -276,28 +267,103 @@ md_values = np.array([4, 10, 15, 20, 30, 40, None])
 for i in md_values:
     dt = DecisionTreeRegressor(random_state=0, max_depth=i)
     dt.fit(X_train, y_train)
-    print('Max Depth of {}: {}'.format(i, dt.score(X_test, y_test)))
+    print('Max Depth of {}: {:.2f}'.format(i, dt.score(X_test, y_test)))
 ~~~
 
-Max Depth of 4: 0.39176342471638936
-Max Depth of 10: 0.6906867054599464
-Max Depth of 15: 0.7952619820850957
-Max Depth of 20: 0.8513349930179878
-Max Depth of 30: 0.9080193432865895
-Max Depth of 40: 0.937263634973241
-Max Depth of None: 0.9505648969358046
+Max Depth of 4: 0.42
+Max Depth of 10: 0.70
+Max Depth of 15: 0.79
+Max Depth of 20: 0.81
+Max Depth of 30: 0.85
+Max Depth of 40: 0.87
+Max Depth of None: 0.87
 
+We can use a modest depth of 10 and then try to reduce the number of features. Decision Tree Regressors have a feature_importances_ method that tells you how important each feature was in building the model:
 
+~~~
+print('Total features: {}'.format(len(dt.feature_importances_)))
+feature_importances = pd.DataFrame({'Feature': features, 'Feature Importance':dt.feature_importances_}).sort_values(by='Feature Importance', ascending=False)
+display(feature_importances.iloc[:50, :])
+~~~
+
+![Plot9](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/feature_importances.png)
+
+This again suggests that departments are an important predictor of sales, along with store size, and certain holiday weeks (47 and 51). Dropping all but the top 50 features (plus the 3 years) makes are model more robust against overfitting, so we will do that and inspect the results:
+
+~~~
+y_pred = dt.predict(X_test)
+
+print('R2 with max depth of 10, 53 features: {:.2f}'.format(dt.score(X_test, y_test)))
+print('RMSE with max depth of 10, 53 features: {:.2f}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
+~~~
+
+R2 with max depth of 10, 53 features: 0.70
+RMSE with max depth of 10, 53 features: 12156.50
+
+Since our model performs almost as well with a quarter of the features, this is an improvement.
 
 ### d. Random Forest Regressor
 
-The last two classes of algorithms we will try are called "ensemble methods," since they combine several machien learning models into a meta-model. Random Forests work by creating multiple decision trees and then averaging out their predictions.
+The last two classes of algorithms we will try are called "ensemble methods," since they combine several machine learning models into a meta-model. Random Forests work by creating multiple decision trees and then averaging out their predictions.
 
-### e. Gradient Boosted Trees
+The best model is one in which we calculate feature importances, reduce our features to only the best 50 (plus the 3 years), and train a model with a modest max depth and number of trees"
+
+~~~
+features_to_drop = feature_importances.iloc[50:, 0]
+features_to_drop = features_to_drop[~features_to_drop.str.contains('Year')]
+
+df_dummies_top_features = df_dummies.drop(features_to_drop, axis=1)
+
+X_train = df_dummies_top_features.loc[(df['Year']==2010) | (df['Year']==2011), :].drop('Weekly_Sales', axis=1).values
+X_test = df_dummies_top_features.loc[df['Year']==2012, :].drop('Weekly_Sales', axis=1).values
+y_train = df_dummies_top_features.loc[(df['Year']==2010) | (df['Year']==2011), 'Weekly_Sales'].values.reshape(-1, 1)
+y_test = df_dummies_top_features.loc[df['Year']==2012, 'Weekly_Sales'].values.reshape(-1, 1)
+
+rf = RandomForestRegressor(n_estimators=10, max_depth=10, random_state=0)
+rf.fit(X_train, y_train)
+
+y_pred = rf.predict(X_test)
+
+print('R2: {:.2f}'.format(metrics.r2_score(y_test, y_pred)))
+print('RMSE: {:.2f}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
+~~~
+
+R2: 0.71
+RMSE: 11920.49
+
+Random Forest does an excellent job with a max_depth of 10 and only a quarter of the features. Our error is now less than 1/2 the standard deviation of weekly sales. We will try one more class of models to see if we can improve performance even more.
+
+### e. Boosted Trees
 
 Boosting is the process by which we build models sequentially, with each model making adjustments to improve the results of previous models. In our case, we build decision trees one at a time, with each tree (called a base learner) learning from the mistakes of the previous tree.
 
+The best model for our problem is an Extreme Gradient Boosted Regressor, which performs well and trains very quickly. As with Random Forest, we have to set max_depth (ideally, a smaller value so that each tree is shallow) and number of estimators (here: "boosting stages"). We also iterate through possible values for learning rate ("eta") which affects how much each tree contributes to the model, subsamples of rows to use, and subsamples of colunns to use. The code for the final model is shown below. Note that we first convert our data into a special structure called "data matrixes" that are optimized to work in the XGBoost learning API.
+
+~~~
+#convert data into DMatrixes
+DM_train = xgb.DMatrix(data=X_train, label=y_train)
+DM_test = xgb.DMatrix(data=X_test, label=y_test)
+
+params = {'objective':'reg:squarederror', 'max_depth': 5, 'eta':0.1, 'subsample':0.8, 'colsample_bytree':0.8}
+
+xgb_model = xgb.train(params=params, dtrain=DM_train, num_boost_round=100)
+
+y_pred = xgb_model.predict(DM_test)
+
+print('R2 with 100 boost rounds: {:.2f}'.format(metrics.r2_score(y_test, y_pred)))
+print('RMSE with 100 boost rounds: {:.2f}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
+~~~
+
+R2 with 100 boost rounds: 0.83
+RMSE with 100 boost rounds: 9175.80
+
+Here we use all features, but restrict each base learner in terms of depth as well as how much of the rows and columns it is allowed to use. The final RMSE is less than 1/2 of the standard deviation of Weekly Sales. 
+
 ## 5. Conclusion
+
+The XGBoost Regressor performs the best on our dataset and trains very quickly. Future work could fine tune this model further by selecting different features, engineering new ones, or trying out different hyperparameter values. Furthermore, we could take advantage of additional libraries and functions in Python for dealing with time series. Here is one example of what that might look like.
+
+One feature you can use for predicting the sales at a time, t2, is the sales at a previous time, t1. The value at a previous time is called a "lagged value" and can be used in predicting a variable that changes over time such as weather, stock prices, and sales. Below is an "autocorrelation plot" that shows the correlation between weekly sales and previous values of weekly sales.
 
 ~~~
 from pandas.plotting import autocorrelation_plot
@@ -314,3 +380,5 @@ _ = plt.annotate('Lag = 1 year', xy=(52, .35))
 ~~~
 
 ![Plot10](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/autocorrelation.png)
+
+The largest correlation occurs at 52 weeks, which means that the sales for a particular week are related to the sales for the same week last year. There is also some correlation between this weeks sales and last week sales, as well as the sales from 6 weeks ago. Approaches such as autocorrelation models and ARIMA would be worth exploring.
