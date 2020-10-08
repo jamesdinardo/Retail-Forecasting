@@ -41,7 +41,7 @@ Store - The store number, ranging from 1 to 45
 
 Date - The week for which sales were calculcated
 
-Temperature - Average temperature (Farenheit) in the region in which the store is located
+Temperature - Average temperature (Fahrenheit) in the region in which the store is located
 
 Fuel_Price - Cost of fuel (dollars per gallon) in the region in which the store is located
 
@@ -143,7 +143,7 @@ _ = sns.heatmap(df.corr(), square=True, cmap='coolwarm', ax=ax)
 
 ![Plot6](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/heatmap.png)
 
-Values closer to 0 indicate weak or no correlation, positive values indicate positive correlation, and negative values indicate negative correlation. The only variable with much correlation to the target (weekly sales) is Size, which make sense since larger stores tend to sell more. But it is improtant to note that heatmaps only show linear one-to-one correlation, so it is possible that variables are correlated to the target in tandem with eachother or in non-linear ways.
+Values closer to 0 indicate weak or no correlation, positive values indicate positive correlation, and negative values indicate negative correlation. The only variable with much correlation to the target (Weekly_Sales) is Size, which make sense since larger stores tend to sell more. But it is improtant to note that heatmaps only show linear one-to-one correlation, so it is possible that variables are correlated to the target in tandem with eachother or in non-linear ways.
 
 Another useful type of plot is the countplot, which counts the number of instances of each unique categorical variable. The following code creates three categorical variables by binning the continuous variable, Size, into three categories: small, medium, and large. Then it maps the Type variable to color and counts how many instances there are for each:
 
@@ -161,9 +161,9 @@ What this plot shows is that Size and Type are correlated. All large stores (>20
 
 ## 4. Modeling
 
-Before training any machine learning models, we have to "preprocess" our data, which means getting it into a format that the models can understand and perform well on. Each of the models notebooks begins with the following preprocessing steps:
+Before training any machine learning models, we have to "preprocess" our data, which means getting it into a format that the models can understand and perform well on. Each modeling notebook begins with the following preprocessing steps:
 
-- Create three categorical features from 'Date'--Week, Month, and Year--and then drop 'Date'
+- Create three categorical features from Date--Week, Month, and Year--and then drop Date
 
 - The scikit-learn API cannot directly work with columns of type "object." So we create dummy variables in Pandas, using the following code:
 
@@ -171,13 +171,14 @@ Before training any machine learning models, we have to "preprocess" our data, w
 df_dummies = pd.get_dummies(df, drop_first=True)
 ~~~
 
-- split the data into X (features) and y (target) and then split each into train and test groups:
+- split the data into train and test sets, where X_train and X_test contain the features and y_train and y_test contain the target:
 
 ~~~
-X = df_dummies.drop('Weekly_Sales', axis=1).values
-y = df_dummies['Weekly_Sales'].values.reshape(-1, 1)
+X_train = df_dummies.loc[(df['Year']==2010) | (df['Year']==2011), :].drop('Weekly_Sales', axis=1).values
+X_test = df_dummies.loc[df['Year']==2012, :].drop('Weekly_Sales', axis=1).values
+y_train = df_dummies.loc[(df['Year']==2010) | (df['Year']==2011), 'Weekly_Sales'].values.reshape(-1, 1)
+y_test = df_dummies.loc[df['Year']==2012, 'Weekly_Sales'].values.reshape(-1, 1)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
 print(f'Shape of X_train: {X_train.shape}')
 print(f'Shape of X_test: {X_test.shape}')
 ~~~
@@ -185,9 +186,9 @@ print(f'Shape of X_test: {X_test.shape}')
 Shape of X_train: (313995, 201)
 Shape of X_test: (104665, 201)
 
-Now, 75% of the data is used to train the model, and 25% will be used to test (evaluate) the model. Note that creating dummy variables greatly increases the number of features to 201. We can use feature selection techniques to reduce this number, or keep it as is depending on how the model is performing.
+Now, roughly 75% of the data will be used to train the model, and 25% will be used to test (evaluate) the model. Note that creating dummy variables greatly increases the number of features to 201. We can use feature selection techniques to reduce this number, or keep it as is depending on how the model is performing.
 
-The goal is to optimize the performance of each model, and then select the model with the best performance. We will use to metrics from the scikit-learn library to measure performance. R2 (pronounced "R squared") evaluates the fit of the model, with 1.0 being a perfect fit. The Root Mean Squared Error (RMSE) squares the difference between each prediction and the real value, sums them all up, and then takes the square root. Since the standard deviation of weekly sales is around $22,000, a good model should be well below that.
+The goal is to optimize the performance of each model, and then select the model with the best performance. We will use to metrics from the scikit-learn library to measure performance. R2 (pronounced "R squared") evaluates the fit of the model, with 1.0 being a perfect fit. The Root Mean Squared Error (RMSE) squares the difference between each prediction and the real value, sums them all up, and then takes the square root. Since the standard deviation of weekly sales is around $22000, a good model should have an RMSE well below that.
 
 ### a. K-Nearest Neighbors
 
@@ -213,8 +214,8 @@ print('R2: {}'.format(metrics.r2_score(y_test, y_pred)))
 print('RMSE: {}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
 ~~~
 
-R2: 0.5574550714522967
-RMSE: 15015.96345584068
+R2: 0.48
+RMSE: 15892.47
 
 KNN does a decent job but is especially slow to train. Next we will consider various linear models.
 
@@ -226,7 +227,7 @@ Linear Regression models create a best fit line by finding the line that minimiz
 
 Lasso and Ridge are examples of "regularization," which means penalizing models that have very large coefficients to keep them from overfitting. Lasso (L1 regularization) adds a penalty to the cost function equal to the sum of the absolute value of the coefficients, while Ridge (L2 regularizaiton) adds a penalty to the cost function equal to the sum of squares of the coefficients. Both have the effect of reducing the coefficients that appear in the final equation for the model. 
 
-The best performing linear model is a Ridge regression that reduces the dataset to only 124 features.
+The best performing linear model is a Ridge regression trained on a dataset that has been reduced to 124 features by keeping track of only the week of the month (from 0 to 4) and dropping some departments:
 
 ~~~
 ridge = Ridge(alpha=0.1)
@@ -244,7 +245,7 @@ The results are an improvement from KNN.
 
 ### c. Decision Tree Regressor
 
-A decision tree asks a series of true or false questions about the data in order to sort them into nodes. For example, we might first ask "Is the department 92?" and move data into the left hand node if not, and right hand node if yes. This is, in fact, the first question (root node) asked by the algorithm of our dataset:
+A decision tree asks a series of true or false questions about the data in order to sort them into nodes. For example, we might first ask "Is the department 92?" and move data into the left hand node if not, and right hand node if yes. This is, in fact, the first question (root node) that is asked of our dataset:
 
 ~~~
 dt_pruned = DecisionTreeRegressor(random_state=0, max_depth=4)
@@ -288,7 +289,7 @@ display(feature_importances.iloc[:50, :])
 
 ![Plot9](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/feature_importances.png)
 
-This again suggests that departments are an important predictor of sales, along with store size, and certain holiday weeks (47 and 51). Dropping all but the top 50 features (plus the 3 years) makes are model more robust against overfitting, so we will do that and inspect the results:
+This again suggests that departments are an important predictor of sales, along with store size, and certain holiday weeks (47 and 51). Dropping all but the top 50 features (plus the 3 years) makes our model more robust against overfitting, so we will do that and inspect the results:
 
 ~~~
 y_pred = dt.predict(X_test)
@@ -304,7 +305,7 @@ Since our model performs almost as well with a quarter of the features, this is 
 
 ### d. Random Forest Regressor
 
-The last two classes of algorithms we will try are called "ensemble methods," since they combine several machine learning models into a meta-model. Random Forests work by creating multiple decision trees and then averaging out their predictions.
+The last two classes of algorithms we will try are called "ensemble methods," since they combine several machine learning models into a single meta-model. Random Forests work by creating multiple decision trees and then averaging their predictions. Specifically, each tree is allowed to use only a subset of rows, so that each tree will make slightly different predictions.
 
 The best model is one in which we calculate feature importances, reduce our features to only the best 50 (plus the 3 years), and train a model with a modest max depth and number of trees"
 
@@ -361,9 +362,9 @@ Here we use all features, but restrict each base learner in terms of depth as we
 
 ## 5. Conclusion
 
-The XGBoost Regressor performs the best on our dataset and trains very quickly. Future work could fine tune this model further by selecting different features, engineering new ones, or trying out different hyperparameter values. Furthermore, we could take advantage of additional libraries and functions in Python for dealing with time series. Here is one example of what that might look like.
+The XGBoost Regressor performs the best on our dataset and trains very quickly. Future work could fine tune this model further by selecting different features, engineering new ones, or trying out different hyperparameter values. For example, we could add unofficial holidays like the superbowl into our dataset, since they might affect sales that week and their exact data changes each year. 
 
-One feature you can use for predicting the sales at a time, t2, is the sales at a previous time, t1. The value at a previous time is called a "lagged value" and can be used in predicting a variable that changes over time such as weather, stock prices, and sales. Below is an "autocorrelation plot" that shows the correlation between weekly sales and previous values of weekly sales.
+We could also take advantage of additional libraries and functions in Python for dealing with time series. For example, one feature you can use for predicting the sales at a time, t2, is the sales at a previous time, t1. The value at a previous time is called a "lagged value" and can be used in predicting a variable that changes over time such as weather, stock prices, and sales. Below is an "autocorrelation plot" that shows the correlation between weekly sales and previous values of weekly sales.
 
 ~~~
 from pandas.plotting import autocorrelation_plot
