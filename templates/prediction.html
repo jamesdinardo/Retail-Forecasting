@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Retail Predictions</title>
+    </head>
+    <body>
+        <h1>Retail Predictions</h1>
+        <p> Enter Information Below</p>
+        <form action="/predict" method="POST">
+            <label for="Store">Store Number</label>
+            <select name="Store">
+                <option value="Store_1">1</option>
+                <option value="Store_2">2</option>
+                <option value="Store_3">3</option>
+                <option value="Store_4">4</option>
+                <option value="Store_5">5</option>
+                <option value="Store_6">6</option>
+                <option value="Store_7">7</option>
+                <option value="Store_8">8</option>
+                <option value="Store_9">9</option>
+                <option value="Store_10">10</option>
+                <option value="Store_11">11</option>
+                <option value="Store_12">12</option>
+                <option value="Store_13">13</option>
+                <option value="Store_14">14</option>
+                <option value="Store_15">15</option>
+                <option value="Store_16">16</option>
+                <option value="Store_17">17</option>
+                <option value="Store_18">18</option>
+                <option value="Store_19">19</option>
+                <option value="Store_20">20</option>
+                <option value="Store_21">21</option>
+                <option value="Store_22">22</option>
+                <option value="Store_23">23</option>
+                <option value="Store_24">24</option>
+                <option value="Store_25">25</option>
+                <option value="Store_26">26</option>
+                <option value="Store_27">27</option>
+                <option value="Store_28">28</option>
+                <option value="Store_29">29</option>
+                <option value="Store_30">30</option>
+                <option value="Store_31">31</option>
+                <option value="Store_32">32</option>
+                <option value="Store_33">33</option>
+                <option value="Store_34">34</option>
+                <option value="Store_35">35</option>
+                <option value="Store_36">36</option>
+                <option value="Store_37">37</option>
+                <option value="Store_38">38</option>
+                <option value="Store_39">39</option>
+                <option value="Store_40">40</option>
+                <option value="Store_41">41</option>
+                <option value="Store_42">42</option>
+                <option value="Store_43">43</option>
+                <option value="Store_44">44</option>
+                <option value="Store_45">45</option>
+            </select>
+            <br>
+            <label for="Type">Store Type</label>
+            <select name="Type">
+                <option value="Type_A">A</option>
+                <option value="Type_B">B</option>
+                <option value="Type_C">C</option>
+            </select>
+            <br>
+            <label for="Dept">Department Number</label>
+            <select name="Dept">
+                <option value="Dept_1">1</option>
+                <option value="Dept_2">2</option>
+                <option value="Dept_3">3</option>
+                <option value="Dept_4">4</option>
+                <option value="Dept_5">5</option>
+                <option value="Dept_6">6</option>
+                <option value="Dept_7">7</option>
+                <option value="Dept_8">8</option>
+                <option value="Dept_9">9</option>
+                <option value="Dept_10">10</option>
+                <option value="Dept_11">11</option>
+                <option value="Dept_12">12</option>
+                <option value="Dept_13">13</option>
+                <option value="Dept_14">14</option>
+                <option value="Dept_16">16</option>
+                <option value="Dept_17">17</option>
+                <option value="Dept_18">18</option>
+                <option value="Dept_19">19</option>
+                <option value="Dept_20">20</option>
+                <option value="Dept_21">21</option>
+                <option value="Dept_22">22</option>
+                <option value="Dept_23">23</option>
+                <option value="Dept_24">24</option>
+                <option value="Dept_25">25</option>
+                <option value="Dept_26">26</option>
+                <option value="Dept_27">27</option>
+                <option value="Dept_28">28</option>
+                <option value="Dept_29">29</option>
+                <option value="Dept_30">30</option>
+                <option value="Dept_31">31</option>
+                <option value="Dept_32">32</option>
+                <option value="Dept_33">33</option>
+                <option value="Dept_34">34</option>
+                <option value="Dept_35">35</option>
+                <option value="Dept_36">36</option>
+                <option value="Dept_37">37</option>
+                <option value="Dept_38">38</option>
+                <option value="Dept_39">39</option>
+                <option value="Dept_40">40</option>
+                <option value="Dept_41">41</option>
+                <option value="Dept_42">42</option>
+                <option value="Dept_43">43</option>
+                <option value="Dept_44">44</option>
+                <option value="Dept_45">45</option>
+                <option value="Dept_46">46</option>
+                <option value="Dept_47">47</option>
+                <option value="Dept_48">48</option>
+                <option value="Dept_49">49</option>
+                <option value="Dept_50">50</option>
+                <option value="Dept_51">51</option>
+                <option value="Dept_52">52</option>
+                <option value="Dept_54">54</option>
+                <option value="Dept_55">55</option>
+                <option value="Dept_56">56</option>
+                <option value="Dept_58">58</option>
+                <option value="Dept_59">59</option>
+                <option value="Dept_60">60</option>
+                <option value="Dept_65">65</option>
+                <option value="Dept_67">67</option>
+                <option value="Dept_71">71</option>
+                <option value="Dept_72">72</option>
+                <option value="Dept_74">74</option>
+                <option value="Dept_77">77</option>
+                <option value="Dept_78">78</option>
+                <option value="Dept_79">79</option>
+                <option value="Dept_80">80</option>
+                <option value="Dept_81">81</option>
+                <option value="Dept_82">82</option>
+                <option value="Dept_83">83</option>
+                <option value="Dept_85">85</option>
+                <option value="Dept_87">87</option>
+                <option value="Dept_90">90</option>
+                <option value="Dept_91">91</option>
+                <option value="Dept_92">92</option>
+                <option value="Dept_93">93</option>
+                <option value="Dept_94">94</option>
+                <option value="Dept_95">95</option>
+                <option value="Dept_96">96</option>
+                <option value="Dept_97">97</option>
+                <option value="Dept_98">98</option>
+                <option value="Dept_99">99</option>
+            </select>
+            <br>
+            <label for="Size">Store Size (30,000-220,000)</label>
+            <input type="text" name="size">
+            <br>
+            <label for="Week">Week of the year</label>
+            <select name="Week">
+                <option value="Week_1">1</option>
+                <option value="Week_2">2</option>
+                <option value="Week_3">3</option>
+                <option value="Week_4">4</option>
+                <option value="Week_5">5</option>
+                <option value="Week_6">6</option>
+                <option value="Week_7">7</option>
+                <option value="Week_8">8</option>
+                <option value="Week_9">9</option>
+                <option value="Week_10">10</option>
+                <option value="Week_11">11</option>
+                <option value="Week_12">12</option>
+                <option value="Week_13">13</option>
+                <option value="Week_14">14</option>
+                <option value="Week_15">15</option>
+                <option value="Week_16">16</option>
+                <option value="Week_17">17</option>
+                <option value="Week_18">18</option>
+                <option value="Week_19">19</option>
+                <option value="Week_20">20</option>
+                <option value="Week_21">21</option>
+                <option value="Week_22">22</option>
+                <option value="Week_23">23</option>
+                <option value="Week_24">24</option>
+                <option value="Week_25">25</option>
+                <option value="Week_26">26</option>
+                <option value="Week_27">27</option>
+                <option value="Week_28">28</option>
+                <option value="Week_29">29</option>
+                <option value="Week_30">30</option>
+                <option value="Week_31">31</option>
+                <option value="Week_32">32</option>
+                <option value="Week_33">33</option>
+                <option value="Week_34">34</option>
+                <option value="Week_35">35</option>
+                <option value="Week_36">36</option>
+                <option value="Week_37">37</option>
+                <option value="Week_38">38</option>
+                <option value="Week_39">39</option>
+                <option value="Week_40">40</option>
+                <option value="Week_41">41</option>
+                <option value="Week_42">42</option>
+                <option value="Week_43">43</option>
+                <option value="Week_44">44</option>
+                <option value="Week_45">45</option>
+                <option value="Week_46">46</option>
+                <option value="Week_47">47</option>
+                <option value="Week_48">48</option>
+                <option value="Week_49">49</option>
+                <option value="Week_50">50</option>
+                <option value="Week_51">51</option>
+                <option value="Week_52">52</option>
+            </select>
+            <button type="submit" value="Submit">Predict</button>
+        </form>
+        <br>
+        {{ prediction}}
+    </body>
+</html>
