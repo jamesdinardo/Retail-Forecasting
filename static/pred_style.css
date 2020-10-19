@@ -1,0 +1,65 @@
+body {
+    background-image: url("background.jpg");
+    background-color: lightblue;
+    }
+
+.topnav {
+  background-color:lightgray;
+  overflow:hidden;
+  }
+  
+.topnav a {
+  color: blue;
+  text-align: left;
+  padding: 12px 12px;
+  text-decoration: none;
+  font-size: 130%;
+}
+
+.topnav a:hover {
+  color: green;
+  font-size: 130%
+  }
+  
+h1 {
+  color: black;
+  text-align: left; 
+}
+
+
+#para1 {
+  color: black;
+  text-align: left;
+  font-size: 130%;
+  }
+
+h2 {
+  color: black;
+  text-align: center;
+  }
+  
+#force_plot {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    }
+  
+#button {
+  font-size: 130%;
+  color:white;
+  background-color: blue;
+  padding: 14px 25px;
+  text-align:center;
+  text-decoration: none;
+  }
+  
+#button:hover {
+  font-size: 130%;
+  color:white;
+  background-color:green;
+  }
+  
+
+  

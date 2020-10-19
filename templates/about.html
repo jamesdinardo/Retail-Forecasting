@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+    <head>
+        <title>About</title>  
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='about_style.css')}}"> 
+    </head>
+    <body>
+        <div class="topnav">
+            <a class="active" href="home">Home</a>
+            <a href="about">About</a>
+        </div>
+        <img src="{{ url_for('static', filename='stores.jpg')}}" height="400" width="1200">
+        <h1>About Retail Predictions</h1>
+        <p> This web app allows the user to input information about a store-department and receive
+        a prediction for weekly sales. The app is built using Flask and the machine learning model
+        is built in Python using the XGBoost learning API.</p>
+        <br>
+        <p>After inputting values for each variable and hitting predict, you will receive both a 
+        prediction as well as graphic indicating which variables most influenced the model. 
+        Try experimenting with different values like Week=51 (right during the holidays) and Department 92 (which has very high sales volume) to
+        see how it impacts the prediction.
+        <p> More information about the project, including all of the code for the model, can be found in the project repository: </p>
+        <a href="https://github.com/jamesdinardo/Retail-Forecasting" target="_blank">https://github.com/jamesdinardo/Retail-Forecasting</a>
+    </body>
+</html>

@@ -5,17 +5,24 @@ from flask import render_template
 from flask import request
 
 import numpy as np
+import matplotlib.pyplot as plt
+import shap
 import xgboost as xgb
 
 app = Flask(__name__)
 
 #load the model
-model = xgb.Booster(model_file='C:/Users/User/Desktop/Data_science/retail/xgb.model')
+model = xgb.Booster(model_file='xgb.model')
 
 
 @app.route('/')
+@app.route('/home')
 def home():
     return render_template('prediction.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -257,7 +264,13 @@ def predict():
         
         #predict
         y_pred = model.predict(matrix)
-        return render_template('prediction.html', prediction='Estimated Weekly Sales: ${}'.format(y_pred))
+        
+        #display force plot
+        explainer = shap.TreeExplainer(model)
+        shap_value = explainer.shap_values(base_array)
+        shap.force_plot(explainer.expected_value, shap_value, base_array, feature_names=column_names, matplotlib=True, show=False)
+        plt.savefig('static/new_plot.png')
+        return render_template('prediction.html', prediction='Estimated Weekly Sales: {}'.format(y_pred), plot_url='static/new_plot.png')
 
 #run the app
 if __name__ == '__main__':

@@ -1,11 +1,17 @@
 <!doctype html>
 <html>
     <head>
-        <title>Retail Predictions</title>
+        <title>Prediction</title>  
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pred_style.css')}}">         
     </head>
     <body>
+        <div class="topnav">
+            <a class="active" href="home">Home</a>
+            <a href="about">About</a>
+        </div>
+        <br>
         <h1>Retail Predictions</h1>
-        <p> Enter Information Below</p>
+        <p id="para1">Enter Information Below</p>
         <form action="/predict" method="POST">
             <label for="Store">Store Number</label>
             <select name="Store">
@@ -209,6 +215,11 @@
             <button type="submit" value="Submit">Predict</button>
         </form>
         <br>
-        {{ prediction}}
+        <h2> {{ prediction}} </h2>
+        <br>
+        <img id="force_plot" src={{ plot_url }}>
+        <br>
+            <a id="button" href="home">Make Another Prediction</a>
+
     </body>
 </html>

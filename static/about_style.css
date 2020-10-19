@@ -1,0 +1,51 @@
+body {
+    background-image: url("background.jpg");
+    background-color: lightblue;
+    }
+
+.topnav {
+  background-color:lightgray;
+  overflow:hidden;
+  }
+  
+.topnav a {
+  color: blue;
+  text-align: left;
+  padding: 12px 12px;
+  text-decoration: none;
+  font-size: 130%;
+}
+
+.topnav a:hover {
+  color: green;
+  font-size: 130%
+  
+img {
+    max-width: 50%;
+    height: auto;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    }
+    
+h1 {
+  color: black;
+  text-align: center; 
+}
+
+
+p {
+  color: black;
+  text-align: left;
+  font-size: 130%;
+  }
+  
+a {
+  font-size: 130%;
+  color:blue;
+  }
+  
+a:hover {
+  font-size: 130%;
+  color:green;
+  }
