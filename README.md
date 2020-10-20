@@ -192,7 +192,7 @@ The goal is to optimize the performance of each model, and then select the model
 
 ### a. K-Nearest Neighbors
 
-The K-Nearest Neighbors or KNN algorithm works by mapping out the feature values for the training data, and then comparing each new datapoint that we want to predict to those values. Imagine that our dataset had only 1 feature, Size, and we wanted to predict the Weekly Sales. The sizes for all training datapoints are stored, and we compare the size of a new datapoint for which we want to predict sales. The algorithm finds the K-Nearest Neighbors--that is, the K datapoints that have the most similar size to the new datapoint--takes the mean target value of those datapoints, and uses that value for the prediction. K is a hyperparamter that we set manually, so if we set K=5, the algorithm will find the closest 5 datapoints based on store size, and predict that our new datapoint's target value (weekly sales) is that of the mean of those 5 points.
+The K-Nearest Neighbors or KNN algorithm works by mapping out the feature values for the training data, and then comparing each new datapoint that we want to predict to those values. Imagine that our dataset had only 1 feature, Size, and we wanted to predict the Weekly Sales. The sizes for all training datapoints are stored, and we compare the size of a new datapoint for which we want to predict sales. The algorithm finds the K-Nearest Neighbors--that is, the K datapoints whose size value is closest to that of the new datapoint (by default, measured by Euclidean distance)--takes the mean target value of those datapoints, and uses that value for the prediction. K is a hyperparamter that we set manually, so if we set K=5, the algorithm will find the closest 5 datapoints based on store size, and predict that our new datapoint's target value (weekly sales) equals the mean of those 5 points.
 
 The best KNN model is one where we use feature selection to retain only the top 50 features, which improves performance and speed.
 
@@ -305,7 +305,7 @@ Since our model performs almost as well with a quarter of the features, this is 
 
 ### d. Random Forest Regressor
 
-The last two classes of algorithms we will try are called "ensemble methods," since they combine several machine learning models into a single meta-model. Random Forests work by creating multiple decision trees and then averaging their predictions. Specifically, each tree is allowed to use only a subset of rows, so that each tree will make slightly different predictions.
+The last two classes of algorithms we will try are called "ensemble methods," since they combine several models (called weak learners) into a one (called a strong learner). Random Forests work by creating multiple decision trees and then averaging their predictions. Specifically, each tree is allowed to use only a subset of rows, so that each tree will make slightly different predictions.
 
 The best model is one in which we calculate feature importances, reduce our features to only the best 50 (plus the 3 years), and train a model with a modest max depth and number of trees"
 
