@@ -183,7 +183,7 @@ print(f'Shape of X_train: {X_train.shape}')
 print(f'Shape of X_test: {X_test.shape}')
 ~~~
 
-Shape of X_train: (313995, 201)
+Shape of X_train: (313995, 201)\
 Shape of X_test: (104665, 201)
 
 Now, roughly 75% of the data will be used to train the model, and 25% will be used to test (evaluate) the model. Note that creating dummy variables greatly increases the number of features to 201. We can use feature selection techniques to reduce this number, or keep it as is depending on how the model is performing.
@@ -214,7 +214,7 @@ print('R2: {}'.format(metrics.r2_score(y_test, y_pred)))
 print('RMSE: {}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
 ~~~
 
-R2: 0.48
+R2: 0.48\
 RMSE: 15892.47
 
 KNN does a decent job but is especially slow to train. Next we will consider various linear models.
@@ -238,7 +238,7 @@ print('R2 using L2 regularization, week of the month, best dept: {:.2f}'.format(
 print('RMSE using L2 regularization, week of the month, best dept: {:.2f}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
 ~~~
 
-R2 using L2 regularization, week of the month, best dept: 0.63
+R2 using L2 regularization, week of the month, best dept: 0.63\
 RMSE using L2 regularization, week of the month, best dept: 13447.08
 
 The results are an improvement from KNN.
@@ -271,12 +271,12 @@ for i in md_values:
     print('Max Depth of {}: {:.2f}'.format(i, dt.score(X_test, y_test)))
 ~~~
 
-Max Depth of 4: 0.42
-Max Depth of 10: 0.70
-Max Depth of 15: 0.79
-Max Depth of 20: 0.81
-Max Depth of 30: 0.85
-Max Depth of 40: 0.87
+Max Depth of 4: 0.42\
+Max Depth of 10: 0.70\
+Max Depth of 15: 0.79\
+Max Depth of 20: 0.81\
+Max Depth of 30: 0.85\
+Max Depth of 40: 0.87\
 Max Depth of None: 0.87
 
 We can use a modest depth of 10 and then try to reduce the number of features. Decision Tree Regressors have a feature_importances_ method that tells you how important each feature was in building the model:
@@ -298,7 +298,7 @@ print('R2 with max depth of 10, 53 features: {:.2f}'.format(dt.score(X_test, y_t
 print('RMSE with max depth of 10, 53 features: {:.2f}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
 ~~~
 
-R2 with max depth of 10, 53 features: 0.70
+R2 with max depth of 10, 53 features: 0.70\
 RMSE with max depth of 10, 53 features: 12156.50
 
 Since our model performs almost as well with a quarter of the features, this is an improvement.
@@ -329,7 +329,7 @@ print('R2: {:.2f}'.format(metrics.r2_score(y_test, y_pred)))
 print('RMSE: {:.2f}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
 ~~~
 
-R2: 0.71
+R2: 0.71\
 RMSE: 11920.49
 
 Random Forest does an excellent job with a max_depth of 10 and only a quarter of the features. Our error is now less than 1/2 the standard deviation of weekly sales. We will try one more class of models to see if we can improve performance even more.
@@ -355,14 +355,14 @@ print('R2 with 100 boost rounds: {:.2f}'.format(metrics.r2_score(y_test, y_pred)
 print('RMSE with 100 boost rounds: {:.2f}'.format(np.sqrt(metrics.mean_squared_error(y_test, y_pred))))
 ~~~
 
-R2 with 100 boost rounds: 0.83
+R2 with 100 boost rounds: 0.83\
 RMSE with 100 boost rounds: 9175.80
 
 Here we use all features, but restrict each base learner in terms of depth as well as how much of the rows and columns it is allowed to use. The final RMSE is less than 1/2 of the standard deviation of Weekly Sales. 
 
 ## 5. Conclusion
 
-The XGBoost Regressor performs the best on our dataset and trains very quickly. Future work could fine tune this model further by selecting different features, engineering new ones, or trying out different hyperparameter values. For example, we could add unofficial holidays like the superbowl into our dataset, since they might affect sales that week and their exact data changes each year. 
+The XGBoost Regressor performs the best on our dataset and trains very quickly. Future work could tune this model further by selecting different features, engineering new ones, or trying out different hyperparameter values. For example, we could add unofficial holidays like the superbowl into our dataset, since they might affect sales that week and their exact date changes from year to year. 
 
 We could also take advantage of additional libraries and functions in Python for dealing with time series. For example, one feature you can use for predicting the sales at a time, t2, is the sales at a previous time, t1. The value at a previous time is called a "lagged value" and can be used in predicting a variable that changes over time such as weather, stock prices, and sales. Below is an "autocorrelation plot" that shows the correlation between weekly sales and previous values of weekly sales.
 

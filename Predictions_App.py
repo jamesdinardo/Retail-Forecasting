@@ -262,7 +262,6 @@ def predict():
             index = column_names.index(var)
             base_array[0][index] = 1
         
-        
         #convert array to a DMatrix
         matrix= xgb.DMatrix(base_array)
         
@@ -281,7 +280,6 @@ def predict():
         #encode PNG to base64 string
         pngImageB64String = "data:image/png;base64,"
         pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
-
 
         return render_template('prediction.html', prediction='Estimated Weekly Sales: ${:.2f}'.format(y_pred), force_plot=pngImageB64String)
 
