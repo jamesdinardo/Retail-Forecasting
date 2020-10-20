@@ -6,8 +6,12 @@ from flask import request
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import shap
 import xgboost as xgb
+import io
+import base64
 
 app = Flask(__name__)
 
@@ -263,14 +267,23 @@ def predict():
         matrix= xgb.DMatrix(base_array)
         
         #predict
-        y_pred = model.predict(matrix)
+        y_pred = float(model.predict(matrix))
         
-        #display force plot
+        #create force plot
         explainer = shap.TreeExplainer(model)
         shap_value = explainer.shap_values(base_array)
-        shap.force_plot(explainer.expected_value, shap_value, base_array, feature_names=column_names, matplotlib=True, show=False)
-        plt.savefig('static/new_plot.png')
-        return render_template('prediction.html', prediction='Estimated Weekly Sales: {}'.format(y_pred), plot_url='static/new_plot.png')
+        force_plot = shap.force_plot(explainer.expected_value, shap_value, base_array, feature_names=column_names, matplotlib=True, show=False)
+        
+        #convert plot to PNG
+        pngImage = io.BytesIO()
+        FigureCanvas(force_plot).print_png(pngImage)
+        
+        #encode PNG to base64 string
+        pngImageB64String = "data:image/png;base64,"
+        pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
+
+
+        return render_template('prediction.html', prediction='Estimated Weekly Sales: ${:.2f}'.format(y_pred), force_plot=pngImageB64String)
 
 #run the app
 if __name__ == '__main__':

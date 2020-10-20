@@ -18,9 +18,10 @@ body {
 
 .topnav a:hover {
   color: green;
-  font-size: 130%
-  
-img {
+  font-size: 130%;
+  }
+
+#stores {
     max-width: 50%;
     height: auto;
     display: block;
@@ -28,6 +29,20 @@ img {
     margin-left: auto;
     }
     
+#new_plot {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    }
+   
+#kaggle {
+  color: blue;
+  text-align: left;
+  font-size: 110%;
+  }
+   
 h1 {
   color: black;
   text-align: center; 

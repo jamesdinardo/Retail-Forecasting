@@ -38,6 +38,45 @@ h2 {
   text-align: center;
   }
   
+form {
+  color: black;
+  text-align: left;
+  font-size: 110%;
+  }
+  
+  
+select {
+  color: black;
+  text-align: left;
+  font-size: 110%;
+   cursor:pointer;
+  }
+  
+input {
+  color: black;
+  text-align: left;
+  font-size: 110%;
+  }  
+
+#predict {
+  font-size: 110%;
+  color:white;
+  background-color: blue;
+  padding: 5px 14px;
+  text-align:center;
+  text-decoration: none;
+  }
+
+#predict:hover {
+  font-size: 110%;
+  color:white;
+  background-color: green;
+  padding: 5px 14px;
+  text-align:center;
+  text-decoration: none;
+  cursor:pointer;
+  }
+
 #force_plot {
     max-width: 100%;
     height: auto;
@@ -45,21 +84,12 @@ h2 {
     margin-right: auto;
     margin-left: auto;
     }
+ 
+
   
-#button {
-  font-size: 130%;
-  color:white;
-  background-color: blue;
-  padding: 14px 25px;
-  text-align:center;
-  text-decoration: none;
-  }
-  
-#button:hover {
-  font-size: 130%;
-  color:white;
-  background-color:green;
-  }
+
+    
+
   
 
   

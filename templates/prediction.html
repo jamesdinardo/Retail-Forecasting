@@ -212,14 +212,11 @@
                 <option value="Week_51">51</option>
                 <option value="Week_52">52</option>
             </select>
-            <button type="submit" value="Submit">Predict</button>
+            <button id="predict" type="submit" value="Submit">Get Prediction</button>
         </form>
         <br>
         <h2> {{ prediction}} </h2>
         <br>
-        <img id="force_plot" src={{ plot_url }}>
-        <br>
-            <a id="button" href="home">Make Another Prediction</a>
-
+        <img id="force_plot" src={{ force_plot }}>
     </body>
 </html>

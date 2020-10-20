@@ -9,17 +9,26 @@
             <a class="active" href="home">Home</a>
             <a href="about">About</a>
         </div>
-        <img src="{{ url_for('static', filename='stores.jpg')}}" height="400" width="1200">
+        <img id="stores" src="{{ url_for('static', filename='stores.jpg')}}" height="400" width="1200">
         <h1>About Retail Predictions</h1>
-        <p> This web app allows the user to input information about a store-department and receive
-        a prediction for weekly sales. The app is built using Flask and the machine learning model
+        <p> This web app allows the user to input information about a store department and receive
+        a prediction for weekly sales. The dataset comes from <a id="kaggle" href="https://www.kaggle.com/manjeetsingh/retaildataset" target="_blank">Kaggle</a> and contains anonymized information about 45 retail stores
+        from 2010-2012. The app is built using Flask and the machine learning model
         is built in Python using the XGBoost learning API.</p>
+        <p>After inputting values for each variable and clicking "Get Prediction" the input is passed to the model and a prediction
+        is made for that week of sales. In addition, a "force plot" is generated that indicates which variables most influenced the model. Here is an example:
         <br>
-        <p>After inputting values for each variable and hitting predict, you will receive both a 
-        prediction as well as graphic indicating which variables most influenced the model. 
-        Try experimenting with different values like Week=51 (right during the holidays) and Department 92 (which has very high sales volume) to
-        see how it impacts the prediction.
+        <br>
+        <img id="new_plot" src="{{ url_for('static', filename='new_plot.png')}}" height="172" width="1400">
+        <br>
+        <p>The base value is the mean weekly sales for each store department in the training data on which the model was fit. The average store department does $16027 in sales each week, so the base value is always placed
+        at that spot. The prediction for any store department varies based on the input variables and is where the red and blue meet. The plot shows which variables pushed the prediction to the left or right--that is, 
+        which variables caused the model to increase (red) or decrease (blue) its prediction. Note that =1 here means that a categorical variable was selected and =0 means that it was not. This input, therefore, is for
+        Week 47 but not for Department 72.</p>
+        <p>We see that choosing Week 47 increased the prediction (which makes sense, since it is a holiday week) and not choosing Department 47 (which typically has large sales)
+        decreased the prediction. Try experimenting with different values like Week 51 (right during the holidays) and Department 92 (which has very high sales volume) to
+        see how they impact the prediction.</p>
         <p> More information about the project, including all of the code for the model, can be found in the project repository: </p>
-        <a href="https://github.com/jamesdinardo/Retail-Forecasting" target="_blank">https://github.com/jamesdinardo/Retail-Forecasting</a>
+        <a href="https://github.com/jamesdinardo/Retail-Forecasting" target="_blank">https://github.com/jamesdinardo/Retail-Forecasting </a> 
     </body>
 </html>
