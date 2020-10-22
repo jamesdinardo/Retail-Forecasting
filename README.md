@@ -143,7 +143,7 @@ _ = sns.heatmap(df.corr(), square=True, cmap='coolwarm', ax=ax)
 
 ![Plot6](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/heatmap.png)
 
-Values closer to 0 indicate weak or no correlation, positive values indicate positive correlation, and negative values indicate negative correlation. The only variable with much correlation to the target (Weekly_Sales) is Size, which make sense since larger stores tend to sell more. But it is improtant to note that heatmaps only show linear one-to-one correlation, so it is possible that variables are correlated to the target in tandem with eachother or in non-linear ways.
+Values closer to 0 indicate weak or no correlation, positive values indicate positive correlation, and negative values indicate negative correlation. The only variable with much correlation to the target (Weekly_Sales) is Size, which makes sense since larger stores tend to sell more. But it is important to note that heatmaps only show linear one-to-one correlation, so it is possible that some variables are correlated to the target in tandem with eachother or in non-linear ways.
 
 Another useful type of plot is the countplot, which counts the number of instances of each unique categorical variable. The following code creates three categorical variables by binning the continuous variable, Size, into three categories: small, medium, and large. Then it maps the Type variable to color and counts how many instances there are for each:
 
@@ -171,7 +171,7 @@ Before training any machine learning models, we have to "preprocess" our data, w
 df_dummies = pd.get_dummies(df, drop_first=True)
 ~~~
 
-- split the data into train and test sets, where X_train and X_test contain the features and y_train and y_test contain the target:
+- Split the data into train and test sets, where X_train and X_test contain the features and y_train and y_test contain the target:
 
 ~~~
 X_train = df_dummies.loc[(df['Year']==2010) | (df['Year']==2011), :].drop('Weekly_Sales', axis=1).values
@@ -188,7 +188,7 @@ Shape of X_test: (104665, 201)
 
 Now, roughly 75% of the data will be used to train the model, and 25% will be used to test (evaluate) the model. Note that creating dummy variables greatly increases the number of features to 201. We can use feature selection techniques to reduce this number, or keep it as is depending on how the model is performing.
 
-The goal is to optimize the performance of each model, and then select the model with the best performance. We will use to metrics from the scikit-learn library to measure performance. R2 (pronounced "R squared") evaluates the fit of the model, with 1.0 being a perfect fit. The Root Mean Squared Error (RMSE) squares the difference between each prediction and the real value, sums them all up, and then takes the square root. Since the standard deviation of weekly sales is around $22000, a good model should have an RMSE well below that.
+The goal is to optimize the performance of each model, and then select the model with the best performance. We will use two metrics from the scikit-learn library to measure performance. R2 (pronounced "R squared") evaluates the fit of the model, with 1.0 being a perfect fit. The Root Mean Squared Error (RMSE) squares the difference between each prediction and the real value, sums them all up, and then takes the square root. Since the standard deviation of weekly sales is around $22000, a good model should have an RMSE well below that.
 
 ### a. K-Nearest Neighbors
 
