@@ -282,7 +282,6 @@ Max Depth of None: 0.87
 We can use a modest depth of 10 and then try to reduce the number of features. Decision Tree Regressors have a feature_importances_ method that tells you how important each feature was in building the model:
 
 ~~~
-print('Total features: {}'.format(len(dt.feature_importances_)))
 feature_importances = pd.DataFrame({'Feature': features, 'Feature Importance':dt.feature_importances_}).sort_values(by='Feature Importance', ascending=False)
 display(feature_importances.iloc[:50, :])
 ~~~
@@ -307,7 +306,7 @@ Since our model performs almost as well with a quarter of the features, this is 
 
 The last two classes of algorithms we will try are called "ensemble methods," since they combine several models (called weak learners) into a one (called a strong learner). Random Forests work by creating multiple decision trees and then averaging their predictions. Specifically, each tree is allowed to use only a subset of rows, so that each tree will make slightly different predictions.
 
-The best model is one in which we calculate feature importances, reduce our features to only the best 50 (plus the 3 years), and train a model with a modest max depth and number of trees"
+The best model is one in which we calculate feature importances, reduce our features to only the best 50 (plus the 3 years), and train a model with a modest max depth and number of trees:
 
 ~~~
 features_to_drop = feature_importances.iloc[50:, 0]
@@ -338,7 +337,7 @@ Random Forest does an excellent job with a max_depth of 10 and only a quarter of
 
 Boosting is the process by which we build models sequentially, with each model making adjustments to improve the results of previous models. In our case, we build decision trees one at a time, with each tree (called a base learner) learning from the mistakes of the previous tree.
 
-The best model for our problem is an Extreme Gradient Boosted Regressor, which performs well and trains very quickly. As with Random Forest, we have to set max_depth (ideally, a smaller value so that each tree is shallow) and number of estimators (here: "boosting stages"). We also iterate through possible values for learning rate ("eta") which affects how much each tree contributes to the model, subsamples of rows to use, and subsamples of colunns to use. The code for the final model is shown below. Note that we first convert our data into a special structure called "data matrixes" that are optimized to work in the XGBoost learning API.
+The best model for our problem is an Extreme Gradient Boosted Regressor, which performs well and trains very quickly. As with Random Forest, we have to set max_depth (ideally, a smaller value so that each tree is shallow) and number of estimators (here: "boosting stages"). We also iterate through possible values for learning rate ("eta") which affects how much each tree contributes to the model, subsamples of rows to use, and subsamples of columns to use. The code for the final model is shown below. Note that we first convert our data into special structures called "data matrixes" that are optimized to work in the XGBoost learning API.
 
 ~~~
 #convert data into DMatrixes
@@ -382,4 +381,4 @@ _ = plt.annotate('Lag = 1 year', xy=(52, .35))
 
 ![Plot10](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/autocorrelation.png)
 
-The largest correlation occurs at 52 weeks, which means that the sales for a particular week are related to the sales for the same week last year. There is also some correlation between this weeks sales and last week sales, as well as the sales from 6 weeks ago. Approaches such as autocorrelation models and ARIMA would be worth exploring.
+The largest correlation occurs at 52 weeks, which means that the sales for a given week are related to the sales for the same week last year. There is also some correlation between this weeks sales and last weeks sales, as well as the sales from 6 weeks ago. Approaches such as autocorrelation models and ARIMA would be worth exploring.
