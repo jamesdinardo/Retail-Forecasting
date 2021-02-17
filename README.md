@@ -25,9 +25,9 @@ This project uses historical sales data for 45 retail stores and predicts the we
 
 ## 1. Introduction
 
-One of the key challenges for retail companies is to predict how well a store or department will perform in the future based on past performance. Given past information about a particular store department--its size, previous sales, the temperature and unemployment rate that week etc--can we predict what its sales will be for a given week next year? This project attempts to predict the 2012 weekly sales for each department of a set of 45 retail stores, based on data from 2010-2011 (see section 2 for the full list of variables). It makes use of several data-science libraries in Python--pandas for data cleaning and analysis, matplotlib for data visualization, and scikit-learn for machine learning. The goal us to implement several different models (including linear, tree-based, and ensemble methods) to come up with a best model that can predict sales within one standard deviation of the mean.
+One of the key challenges for retail companies is to predict how well a store or department will perform in the future based on past performance. Given past information about a particular store department--its size, previous sales, the temperature and unemployment rate that week etc--can we predict what its sales will be for a given week next year? This project attempts to predict the 2012 weekly sales for each department of a set of 45 retail stores, based on data from 2010-2011 (see section 2 for the full list of variables). It makes use of several data-science libraries in Python--pandas for data cleaning and analysis, matplotlib for data visualization, and scikit-learn for machine learning. The goal is to implement several different models (including linear, tree-based, and ensemble methods) to come up with a best model that can predict sales within one standard deviation of the mean.
 
-The code is written in Python inside of Jupyter notebooks (ipynb files). There are 7 notebooks in total: one for data preparation, one for data exploration, and one for each of the 5 types of models that will be trained, tested, and evaluated. This readme contains only minimal code and visualizations needed to express the main insights: the full code can be found in the notebooks, which can be downloaded should one wish to experiment on their own with the data. Additionally, I have created an easy to use application, written in Flask, where the user can input information, such as the store, department, and week, and immediately receive a prediction for weekly sales. 
+The code is written in Python inside of Jupyter notebooks (ipynb files). There are 7 notebooks in total: one for data preparation, one for data exploration, and one for each of the 5 types of models that will be trained, tested, and evaluated. This readme contains only minimal code and visualizations needed to express the main insights: the full code can be found in the notebooks, which can be downloaded should one wish to experiment on their own with the data. Additionally, I have created an easy to use [application](https://retail-predictions.herokuapp.com), written in Flask, where the user can input information, such as the store, department, and week, and immediately receive a prediction for weekly sales. 
 
 ## 2. Overview of the Data
 
@@ -134,7 +134,9 @@ df.groupby('Dept').agg({'Weekly_Sales':'mean'}).sort_values(by='Weekly_Sales', a
 
 ![Plot5](https://github.com/jamesdinardo/Retail-Forecasting/blob/master/img/average_weekly_sales_by_dept.png)
 
-In addition, some of the departments only appear for a few weeks, suggesting that those departments might have been phased out or merged with other departments. Since we are predicting store department sales, each of these variables are likely to be important when building models. Let's look at the linear correleation between each of the continuous variables in the dataset. An easy way to view linear correlation is to construct a heatmap:
+In addition, some of the departments only appear for a few weeks, suggesting that those departments might have been phased out or merged with other departments. Since we are predicting store department sales, each of these variables is likely to be important when building models. 
+
+Let's also look at the linear correleation between each of the continuous variables in the dataset. An easy way to view linear correlation is to construct a heatmap:
 
 ~~~
 fix, ax = plt.subplots(figsize=(7, 5))
